@@ -1,0 +1,11 @@
+slugs:
+  chars_length: 6
+  storage:
+    table_name: slugs
+  validation:
+    url_timeout: 5s
+
+db:
+  engine: sqlite3
+  port: 0
+  connection_url: testing.db

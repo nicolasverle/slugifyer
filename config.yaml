@@ -1,0 +1,11 @@
+slugs:
+  chars_length: 6
+  storage:
+    table_name: slugs
+  validation:
+    url_timeout: 5s
+
+db:
+  engine: postgres
+  port: 5432
+  connection_url: user=root dbname=stoik sslmode=disable password=toor host=localhost
