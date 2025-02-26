@@ -10,4 +10,4 @@ This simple API aims to shorten URL into little alphanum string and then process
 
 ## Run
 
-Ensure `docker-compose` is installed locally and simply perfor `make run`
+Ensure `docker-compose` is installed locally and simply perform `make run`
