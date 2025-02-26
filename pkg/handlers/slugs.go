@@ -31,6 +31,17 @@ func (s *slugsHandler) AddRoutes(e *gin.Engine) {
 	e.GET("/:slug", redirect)
 }
 
+// redirect godoc
+//
+//	@Summary		Will redirect to the URL specified by the slug
+//	@Description	take an URL as a parameter, validate it and then create an alphanumeric alias
+//	@Tags			slugs
+//	@Param			slug	body		string	true	"slug to be processd for redirection"
+//	@Success		303		{object}	nil
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Failure		404		{object}	error
+//	@Router			/:slug [get]
 func redirect(ctx *gin.Context) {
 	slug := ctx.Param("slug")
 	if slug == "" {
@@ -64,6 +75,18 @@ func redirect(ctx *gin.Context) {
 	}
 }
 
+// shortenize godoc
+//
+//	@Summary		Will shorten an URL
+//	@Description	take an URL as a parameter, validate it and then create an alphanumeric alias
+//	@Tags			slugs
+//	@Accept			json
+//	@Produce		json
+//	@Param			url		query			string	true	"url to create slug from"
+//	@Success		201		{object}	handlers.slugObject
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/shortenize [post]
 func shortenize(ctx *gin.Context) {
 	url2Process := ctx.Query("url")
 	if url2Process == "" {
@@ -113,7 +136,7 @@ func shortenize(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{"url": obj.URL, "slug": obj.Slug})
+		ctx.JSON(http.StatusCreated, gin.H{"url": obj.URL, "slug": obj.Slug})
 		return
 	}
 }

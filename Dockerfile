@@ -7,12 +7,12 @@ COPY . .
 
 RUN go mod download && go mod verify
 
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -a -trimpath  -o stoik-api .
+RUN CGO_ENABLED=0 go build -ldflags "-s -w" -a -trimpath  -o slugifyer .
 
-FROM scratch
+FROM alpine
 
-COPY --from=gobuild /home/stoik-api /
+COPY --from=gobuild /home/slugifyer /
 
 USER 65532:65532
 
-ENTRYPOINT [ "/stoik-api" ]
+ENTRYPOINT [ "/slugifyer" ]

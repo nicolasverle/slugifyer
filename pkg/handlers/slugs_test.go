@@ -1,42 +1,71 @@
-package handlers_test
+package handlers
 
 import (
-	"log"
-	"os"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/nicolasverle/slugifyer/pkg/config"
+	"github.com/nicolasverle/slugifyer/pkg/router"
+	"github.com/stretchr/testify/assert"
 )
 
-const (
-	testingDB = "testing.db"
-)
+func TestShouldFailWithInvalidSlug(t *testing.T) {
+	router := router.SetupRouter()
 
-var 
+	NewShortener().AddRoutes(router)
 
-var _ = Describe("slugs creation", func() {
-	BeforeAll(func() {
-		file, err := os.Create(testingDB) // Create SQLite file
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-		file.Close()
-		log.Println("db created")
-	})
+	w := httptest.NewRecorder()
 
-	BeforeEach(func() {
+	slug2Test := "wZrtdffgfgsfzeferfgefdgfsgfdg"
 
-	})
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/%s", slug2Test), nil)
+	router.ServeHTTP(w, req)
 
-	Context("When a valid URL is submitted", func() {
-		It("should generate a slug", func() {
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Contains(t, w.Body.String(), fmt.Sprintf("%s is not a valid slug", slug2Test))
+}
 
-		})
-	})
+func TestShouldFailWithNoValidURL(t *testing.T) {
+	router := setupServer()
 
-	AfterAll(func() {
-		os.Remove(testingDB)
-	})
-})
+	w := httptest.NewRecorder()
+
+	url2Test := "foobar"
+
+	req, _ := http.NewRequest("POST", fmt.Sprintf("/shortenize?url=%s", url2Test), nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Contains(t, w.Body.String(), fmt.Sprintf("%s is not a valid URL", url2Test))
+}
+
+func TestShouldFailWithURLCannotBeReached(t *testing.T) {
+	router := setupServer()
+
+	w := httptest.NewRecorder()
+
+	url2Test := "https://foobar.com/bobTheSponge"
+
+	req, _ := http.NewRequest("POST", fmt.Sprintf("/shortenize?url=%s", url2Test), nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Contains(t, w.Body.String(), fmt.Sprintf("%s cannot be reached", url2Test))
+}
+
+func setupServer() *gin.Engine {
+	router := router.SetupRouter()
+
+	NewShortener().AddRoutes(router)
+
+	if err := config.Parse(); err != nil {
+		log.Fatal().Msgf("unable to parse configuration, %s", err.Error())
+	}
+
+	return router
+}

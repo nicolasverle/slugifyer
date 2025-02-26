@@ -8,4 +8,4 @@ slugs:
 db:
   engine: postgres
   port: 5432
-  connection_url: user=root dbname=stoik sslmode=disable password=toor host=localhost
+  connection_url: user=root dbname=stoik sslmode=disable password=toor host=db

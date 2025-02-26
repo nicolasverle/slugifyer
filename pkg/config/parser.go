@@ -40,7 +40,8 @@ func Parse() error {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
-	viper.AddConfigPath("config_test.yaml")
+	// config path for pkg unit testing...
+	viper.AddConfigPath("../..")
 
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("env")

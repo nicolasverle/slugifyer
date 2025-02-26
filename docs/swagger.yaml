@@ -1,0 +1,71 @@
+basePath: /
+definitions:
+  handlers.slugObject:
+    properties:
+      slug:
+        type: string
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Slugifyer API to alias URL into a short string ID
+  title: Slugifyer API
+  version: 0.0.1
+paths:
+  /:slug:
+    get:
+      description: take an URL as a parameter, validate it and then create an alphanumeric
+        alias
+      parameters:
+      - description: slug to be processd for redirection
+        in: body
+        name: slug
+        required: true
+        schema:
+          type: string
+      responses:
+        "303":
+          description: See Other
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Will redirect to the URL specified by the slug
+      tags:
+      - slugs
+  /shortenize:
+    post:
+      consumes:
+      - application/json
+      description: take an URL as a parameter, validate it and then create an alphanumeric
+        alias
+      parameters:
+      - description: url to create slug from
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.slugObject'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Will shorten an URL
+      tags:
+      - slugs
+swagger: "2.0"
