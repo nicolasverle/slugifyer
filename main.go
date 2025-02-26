@@ -22,15 +22,17 @@ import (
 func main() {
 	r := router.SetupRouter()
 
+	// parse API configuration
 	if err := config.Parse(); err != nil {
 		log.Fatal().Msgf("unable to parse configuration, %s", err.Error())
 	}
 
+	// health route
 	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"status": "up"})
 	})
 
-	// r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	// expose swagger API documentation
 	r.GET("/doc/*any", func(c *gin.Context) {
 		if c.Request.RequestURI == "/doc/" {
 			c.Redirect(302, "/doc/index.html")

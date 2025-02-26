@@ -49,6 +49,7 @@ func redirect(ctx *gin.Context) {
 		return
 	}
 
+	// ensure the slug has the correct length
 	if len(slug) != viper.GetInt("slugs.chars_length") {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("%s is not a valid slug", slug)})
 		return
@@ -100,6 +101,7 @@ func shortenize(ctx *gin.Context) {
 		return
 	}
 
+	// Will check that the URL is valid and also that it can be reached
 	if err := checkURL(url2Process, checkTO); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -119,6 +121,7 @@ func shortenize(ctx *gin.Context) {
 		return
 	}
 
+	// return the slug retrieved in the database if exists
 	if retrieved != nil {
 		ctx.JSON(http.StatusOK, gin.H{"url": retrieved.URL, "slug": retrieved.Slug})
 		return
