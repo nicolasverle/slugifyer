@@ -43,5 +43,7 @@ func main() {
 
 	handlers.NewShortener().AddRoutes(r)
 
-	r.Run(":8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal().Msgf("unable to run the API on :8080, %s", err.Error())
+	}
 }
